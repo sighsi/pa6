@@ -1,0 +1,13 @@
+API NOTES:
+	- Does postman work with c++?
+	- https://covidtracking.com/data/api
+	
+APP IDEA(s):
+
+	Small window. Terminal section thus sidestepping buttons etc. 
+	graphical section, maybe buttons selecting the period displayed
+	
+REST:
+	- to compile
+		Make doesnt work rn
+		g++ -std=c++11 main.cpp -o my_file -lboost_system -lcrypto -lssl -lcpprest -pthread
