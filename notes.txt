@@ -10,4 +10,7 @@ APP IDEA(s):
 REST:
 	- to compile
 		Make doesnt work rn
-		g++ -std=c++11 main.cpp -o my_file -lboost_system -lcrypto -lssl -lcpprest -pthread
+		g++ -std=c++11 main.cpp -g -lboost_system -lcrypto -lssl -lcpprest -pthread
+	- Casalens gives a preconfigured aggregate of localized data based on zip code
+		https://github.com/microsoft/cpprestsdk/tree/master/Release/samples/CasaLens
+	
