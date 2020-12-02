@@ -2,6 +2,11 @@
 #define DATASTRUCTURES_H
 
 
+#include <iostream>
+#include <fstream>  // to read from the files
+#include <string>   //
+#include <sstream>
+#include <unordered_map> // Hash map
 // DATA CLASS:
 class nationalHistory { // titled this way bc that's the name of the csv file I downloaded from their website
 
@@ -36,5 +41,6 @@ public:
 
 };
 
-
+void readFiles(std::string fileName, std::unordered_map<double, nationalHistory> *&);
+void apiCall();
 #endif
