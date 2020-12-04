@@ -1,14 +1,14 @@
 #include "dataStructures.h"
 
 //REST
-#include <cpprest/http_client.h>
-#include <cpprest/filestream.h>
+//#include <cpprest/http_client.h>
+//#include <cpprest/filestream.h>
 
-using namespace utility;                    // Common utilities like string conversions
-using namespace web;                        // Common features like URIs.
-using namespace web::http;                  // Common HTTP functionality
-using namespace web::http::client;          // HTTP client features
-using namespace concurrency::streams;       // Asynchronous streams
+// using namespace utility;                    // Common utilities like string conversions
+// using namespace web;                        // Common features like URIs.
+// using namespace web::http;                  // Common HTTP functionality
+// using namespace web::http::client;          // HTTP client features
+// using namespace concurrency::streams;       // Asynchronous streams
 
 void readFiles(std::string fileName, std::unordered_map<double, nationalHistory> *& data){
     std::fstream f;
@@ -60,11 +60,11 @@ void readFiles(std::string fileName, std::unordered_map<double, nationalHistory>
         getline(tokenStream, totalTestResultsIncrease,'\r');
         nationalHistory nH;
 //getting date        // nH.date = std::stoi( date);//"2020-12-01"
-        // date = date.substr(1,10);
-        // nH.year = std::stoi (date.substr(0,4));
-        // nH.month = std::stoi (date.substr(5,7));
-        // nH.day = std::stoi (date.substr(9,10));
-         nH.date = (date.compare("") == 0) ? : std::stoi( date);
+        date = date.substr(1,10);
+        nH.year = std::stoi (date.substr(0,4));
+        nH.month = std::stoi (date.substr(5,7));
+        nH.day = std::stoi (date.substr(9,10));
+        nH.date = (date.compare("") == 0) ? : std::stoi( date);
         nH.death = (death.compare("") == 0) ? : std::stoi( death);
         nH.deathIncrease = (deathIncrease.compare("") == 0) ? : std::stoi( deathIncrease);
         nH.inIcuCumulative = (inIcuCumulative.compare("") == 0) ? : std::stoi( inIcuCumulative);
@@ -93,7 +93,7 @@ void readFiles(std::string fileName, std::unordered_map<double, nationalHistory>
     }
     f.close();
 }
-
+/*
 void apiCall(){
 
     auto fileStream = std::make_shared<ostream>();
@@ -138,3 +138,5 @@ void apiCall(){
     //return *statusCode;
 
 }
+
+*/
