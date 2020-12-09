@@ -1,14 +1,33 @@
-#include "dataStructures.h"
+#include "functions.h"
 
 //REST
-//#include <cpprest/http_client.h>
-//#include <cpprest/filestream.h>
+#include <cpprest/http_client.h>
+#include <cpprest/filestream.h>
 
-// using namespace utility;                    // Common utilities like string conversions
-// using namespace web;                        // Common features like URIs.
-// using namespace web::http;                  // Common HTTP functionality
-// using namespace web::http::client;          // HTTP client features
-// using namespace concurrency::streams;       // Asynchronous streams
+//SFML
+#include<SFML/Graphics.hpp>
+
+using namespace utility;                    // Common utilities like string conversions
+using namespace web;                        // Common features like URIs.
+using namespace web::http;                  // Common HTTP functionality
+using namespace web::http::client;          // HTTP client features
+using namespace concurrency::streams;       // Asynchronous streams
+
+
+// void reset_indicators (Button button_arr[], int cur_select)
+// {
+//     for (int i = 0; i < 7; i++) //update this so it doesn't depend on magic num connor. -connor 12/8/20
+//     {
+//         if(i == cur_select)
+//         {
+//             continue;
+//         }
+//         button_arr[i].set_indicator(false); // 
+
+//     }
+
+
+// }
 
 void readFiles(std::string fileName, std::unordered_map<double, nationalHistory> *& data){
     std::fstream f;
@@ -93,8 +112,8 @@ void readFiles(std::string fileName, std::unordered_map<double, nationalHistory>
     }
     f.close();
 }
-/*
-void apiCall(){
+
+void apiCall(std::string apiURL){
 
     auto fileStream = std::make_shared<ostream>();
 
@@ -138,5 +157,3 @@ void apiCall(){
     //return *statusCode;
 
 }
-
-*/
