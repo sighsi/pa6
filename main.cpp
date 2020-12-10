@@ -29,9 +29,9 @@ std::string API_CURRENT_US_VALUES = "/v1/us/current.csv"; // Button 1
 std::string API_DAILY_VALUES =      "/v1/us/daily.csv";        // THIS IS THE ONLY ONE WE NEED
 std::string API_DATE_PART1 =        "/v1/us/";                   // enter "20200501" to get may first
 std::string API_FILE_EXTENSION =    ".csv";
-std::string API_STATE_VALUES =      "/v1/states/info.csv";           // state values
-std::string API_SPEC_STATE_PT1 =    "/v1/states/{state}/info.csv"; ///v1/status.csv
-std::string API_STATUS =            "/v1/status.csv";  
+std::string API_STATE_VALUES =      "/v1/states/daily.csv";           // state values
+
+
 std::string DATA_FILE_PATH =        "data/";
 std::string TODAYS_DATE;
 int NUMBTNS = 7;
@@ -297,8 +297,10 @@ void button5Function(std::unordered_map<std::string, apiDataClass> *& data);
 int main(int argc, char *argv[])
 {
     apiCall(API_DAILY_VALUES);
+    // apiCall(API_STATE_VALUES);
     std::unordered_map<std::string, apiDataClass> *data = new std::unordered_map<std::string, apiDataClass>(); // hash table <key is date in format
-    readFiles("data/daily.csv", data);
+    readFiles("data/v1usdaily.csv", data); ///v1/states/daily.csv" ///v1/us/daily.csv
+
     run_program(data);
     return 0;
 }
@@ -313,12 +315,14 @@ int main(int argc, char *argv[])
 void apiCall(std::string apiExtension)
 {
     std::string fileName = apiExtension;
-    std::size_t found = fileName.find('/');
-    while (found != std::string::npos){
-        fileName = fileName.substr(found +1);
-        std::cout << "the substring: " << fileName << std::endl;
-        found = fileName.find("/");
-    }
+    fileName.erase(std::remove(fileName.begin(), fileName.end(), '/'), fileName.end());
+    // std::size_t found = fileName.find('/');
+    // while (found != std::string::npos){
+    //     fileName = fileName.substr(found +1);
+    //     std::cout << "the substring: " << fileName << std::endl;
+    //     found = fileName.find("/");
+    // }
+    std::cout << "the substring: " << fileName << std::endl;
     fileName = DATA_FILE_PATH + fileName;
     auto fileStream = std::make_shared<ostream>();
     // Open stream to output file.
@@ -362,7 +366,7 @@ void apiCall(std::string apiExtension)
 
 //*************************************************************************************\\
 //*************************************************************************************\\
-//**************************** FUNCTIONS           *************************************\\
+//**************************** FUNCTIONS           *****************************`********\\
 //*************************************************************************************\\
 //*************************************************************************************\\
 //*************************************************************************************\\
@@ -394,16 +398,7 @@ void printDateData(std::unordered_map<std::string, apiDataClass> *& data, std::s
     std::cout << "Number of recovered cases: " << todayData -> second.recovered << std::endl;
 
 }
-// void button1Function(std::unordered_map<std::string, apiDataClass> *& data, std::string date) 
-// {
-//     auto todayData = data->find(date);
-//     // std::string date =  todayData -> second.date;
-//     date.insert(4, "/");
-//     date.insert(7, "/");
-//     std::cout << "The date you entered " << date  << std::endl;
-//     std::cout << "The death toll on: " << todayData -> second.death << std::endl;
-//     std::cout << "The number of cases on that day: " << todayData -> second.positive << std::endl;
-// }
+
 void button2Function(std::unordered_map<std::string, apiDataClass> *& data) 
 {
 std::cout << "case 2" << std::endl;
