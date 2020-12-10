@@ -24,15 +24,9 @@ using namespace web::http;            // Common HTTP functionality
 using namespace web::http::client;    // HTTP client features
 using namespace concurrency::streams; // Asynchronous streams
 
-std::string API_BASE =              "https://api.covidtracking.com";
-std::string API_CURRENT_US_VALUES = "/v1/us/current.csv"; // Button 1
 std::string API_DAILY_VALUES =      "/v1/us/daily.csv";        // THIS IS THE ONLY ONE WE NEED
-std::string API_DATE_PART1 =        "/v1/us/";                   // enter "20200501" to get may first
-std::string API_FILE_EXTENSION =    ".csv";
-std::string API_STATE_VALUES =      "/v1/states/daily.csv";           // state values
-
-
-std::string DATA_FILE_PATH =        "data/";
+std::string API_STATE_VALUES =      "/v1/states/current.csv";           // state values
+std::string DATA_FILE_PATH =        "data/"; 
 std::string TODAYS_DATE;
 int NUMBTNS = 7;
 /**
@@ -41,20 +35,11 @@ int NUMBTNS = 7;
  *  BTN1: GET DATA FROM A DATE TEXTBOX
  *  BTN2: SHOW WASHINGTON DATA
  *  BTN3: GRAB STATE STRING FROM TEXTBOX AND DISPLAY STATE DATA
-*   BTN4: CHAT BOX
+ *  BTN4: CHAT BOX
  *  BTN5: COLORADO DATA
  *  BTN6: HELP -> FEATURES/ OF THE PROGRAM AND ALSO SHOWS API STATUS
  * 
- * TODO:
- *      silas:  1) create a state data structure
- *          2)  
- *  Connor
- * 
- *  Daniel:
- * 
- * 
  */ 
-
 //*************************************************************************************\\
 //**************************** button class     *************************************\\
 //*************************************************************************************\\
@@ -259,10 +244,8 @@ public:
 };
 
 class apiDataClass { // titled this way bc that's the name of the csv file I downloaded from their website
-
     public:
-        apiDataClass(){}
-
+    apiDataClass(){};
     std::string date, 
                 states,
                 positive,
@@ -286,18 +269,77 @@ class apiDataClass { // titled this way bc that's the name of the csv file I dow
                 hospitalizedIncrease,
                 negativeIncrease,
                 positiveIncrease,
-                totalTestResultsIncrease;
-    std::string hash;
+                totalTestResultsIncrease,
+                hash;
 
 
 };
 
+class stateData {
+public:
+    stateData(){};
+    std::string date,
+                state,
+                positive,
+                probableCases,
+                negative,
+                pending,
+                totalTestResultsSource,
+                totalTestResults,
+                hospitalizedCurrently,
+                hospitalizedCumulative,
+                inIcuCurrently,
+                inIcuCumulative,
+                onVentilatorCurrently,
+                onVentilatorCumulative,
+                recovered,
+                dataQualityGrade,
+                lastUpdateEt,
+                dateModified,
+                checkTimeEt,
+                death,
+                hospitalized,
+                dateChecked,
+                totalTestsViral,
+                positiveTestsViral,
+                negativeTestsViral,
+                positiveCasesViral,
+                deathConfirmed,
+                deathProbable,
+                totalTestEncountersViral,
+                totalTestsPeopleViral,
+                totalTestsAntibody,
+                positiveTestsAntibody,
+                negativeTestsAntibody,
+                totalTestsPeopleAntibody,
+                positiveTestsPeopleAntibody,
+                negativeTestsPeopleAntibody,
+                totalTestsPeopleAntigen,
+                positiveTestsPeopleAntigen,
+                totalTestsAntigen,positiveTestsAntigen,
+                fips,positiveIncrease,
+                negativeIncrease,
+                total,
+                totalTestResultsIncrease,
+                posNeg,
+                deathIncrease,
+                hospitalizedIncrease,
+                hash,
+                commercialScore,
+                negativeRegularScore,
+                negativeScore,
+                positiveScore,
+                score,
+                grade;
 
+};
 
 void apiCall(std::string);
 void reset_indicators(Button button_arr[], int cur_select);
 void run_program(std::unordered_map<std::string, apiDataClass> *& data);
 void readFiles(std::string fileName, std::unordered_map<std::string, apiDataClass> *& data);
+
+void readStateFiles(std::string fileName, std::unordered_map<std::string, stateData> *& data);
 
 void printDateData(std::unordered_map<std::string, apiDataClass> *& data, std::string date);
 // void button1Function(std::unordered_map<std::string, apiDataClass> *& data), std::string date;
@@ -316,11 +358,12 @@ void button5Function(std::unordered_map<std::string, apiDataClass> *& data);
 int main(int argc, char *argv[])
 {
     apiCall(API_DAILY_VALUES);
-    // apiCall(API_STATE_VALUES);
-    std::unordered_map<std::string, apiDataClass> *data = new std::unordered_map<std::string, apiDataClass>(); // hash table <key is date in format
-    readFiles("data/v1usdaily.csv", data); ///v1/states/daily.csv" ///v1/us/daily.csv
-
-    run_program(data);
+    apiCall(API_STATE_VALUES);
+    std::unordered_map<std::string, apiDataClass> *dateData = new std::unordered_map<std::string, apiDataClass>(); // hash table <key is date in format
+    std::unordered_map<std::string, stateData> *state = new std::unordered_map<std::string, stateData>();
+    readFiles("data/v1usdaily.csv", dateData);
+    readStateFiles("v1statescurrent.csv", state );
+    //run_program(data);
     return 0;
 }
 
@@ -434,10 +477,6 @@ void button5Function(std::unordered_map<std::string, apiDataClass> *& data)
 {
 std::cout << "case 5" << std::endl;
 }
-
-
-
-
 
 void run_program(std::unordered_map<std::string, apiDataClass> *& data) {
 
@@ -666,7 +705,7 @@ void run_program(std::unordered_map<std::string, apiDataClass> *& data) {
 
 
 
-void readFiles(std::string fileName, std::unordered_map<std::string, apiDataClass> *& data)
+void      readFiles(std::string fileName, std::unordered_map<std::string, apiDataClass> *& data)
 {
     std::fstream f;
     f.open( fileName);
@@ -762,6 +801,186 @@ void readFiles(std::string fileName, std::unordered_map<std::string, apiDataClas
         nH.totalTestResultsIncrease = totalTestResultsIncrease;
         nH.hash = hash;
         data -> emplace(date, nH);
+    }
+    f.close();
+}
+
+void readStateFiles(std::string fileName, std::unordered_map<std::string, stateData> *& data)
+{
+    std::fstream f;
+    f.open( fileName);
+    if (!f.is_open()) std::cout << "Error reading destinations" << std::endl;
+
+    std::string line;
+
+    std::string date;
+    std::string state;
+    std::string positive;
+    std::string probableCases;
+    std::string negative;
+    std::string pending;
+    std::string totalTestResultsSource;
+    std::string totalTestResults;
+    std::string hospitalizedCurrently;
+    std::string hospitalizedCumulative;
+    std::string inIcuCurrently;
+    std::string inIcuCumulative;
+    std::string onVentilatorCurrently;
+    std::string onVentilatorCumulative;
+    std::string recovered;
+    std::string dataQualityGrade;
+    std::string lastUpdateEt;
+    std::string dateModified;
+    std::string checkTimeEt;
+    std::string death;
+    std::string hospitalized;
+    std::string dateChecked;
+    std::string totalTestsViral;
+    std::string positiveTestsViral;
+    std::string negativeTestsViral;
+    std::string positiveCasesViral;
+    std::string deathConfirmed;
+    std::string deathProbable;
+    std::string totalTestEncountersViral;
+    std::string totalTestsPeopleViral;
+    std::string totalTestsAntibody;
+    std::string positiveTestsAntibody;
+    std::string negativeTestsAntibody;
+    std::string totalTestsPeopleAntibody;
+    std::string positiveTestsPeopleAntibody;
+    std::string negativeTestsPeopleAntibody;
+    std::string totalTestsPeopleAntigen;
+    std::string positiveTestsPeopleAntigen;
+    std::string totalTestsAntigen;
+    std::string fips;
+    std::string negativeIncrease;
+    std::string total;
+    std::string totalTestResultsIncrease;
+    std::string posNeg;
+    std::string deathIncrease;
+    std::string hospitalizedIncrease;
+    std::string hash;
+    std::string commercialScore;
+    std::string negativeRegularScore;
+    std::string negativeScore;
+    std::string positiveScore;
+    std::string score;
+    std::string grade;
+ 
+    getline(f, line, '\n'); // throws away all the labels
+    while (getline(f, line, '\n')) {
+        stateData nH;
+        std::istringstream tokenStream(line);
+        tokenStream.fill(); 
+        
+        getline(tokenStream, date, ',');
+        getline(tokenStream, state, ',');
+        getline(tokenStream, positive, ',');
+        getline(tokenStream, probableCases, ',');
+        getline(tokenStream, negative, ',');
+        getline(tokenStream, pending, ',');
+        getline(tokenStream, totalTestResultsSource, ',');
+        getline(tokenStream, totalTestResults, ',');
+        getline(tokenStream, hospitalizedCurrently, ',');
+        getline(tokenStream, hospitalizedCumulative, ',');
+        getline(tokenStream, inIcuCurrently, ',');
+        getline(tokenStream, inIcuCumulative, ',');
+        getline(tokenStream, onVentilatorCurrently, ',');
+        getline(tokenStream, onVentilatorCumulative, ',');
+        getline(tokenStream, recovered, ',');
+        getline(tokenStream, dataQualityGrade, ',');
+        getline(tokenStream, lastUpdateEt, ',');
+        getline(tokenStream, dateModified, ',');
+        getline(tokenStream, checkTimeEt, ',');
+        getline(tokenStream, death, ',');
+        getline(tokenStream, hospitalized, ',');
+        getline(tokenStream, dateChecked, ',');
+        getline(tokenStream, totalTestsViral, ',');
+        getline(tokenStream, positiveTestsViral, ',');
+        getline(tokenStream, negativeTestsViral, ',');
+        getline(tokenStream, positiveCasesViral, ',');
+        getline(tokenStream, deathConfirmed, ',');
+        getline(tokenStream, deathProbable, ',');
+        getline(tokenStream, totalTestEncountersViral, ',');
+        getline(tokenStream, totalTestsPeopleViral, ',');
+        getline(tokenStream, totalTestsAntibody, ',');
+        getline(tokenStream, positiveTestsAntibody, ',');
+        getline(tokenStream, negativeTestsAntibody, ',');
+        getline(tokenStream, totalTestsPeopleAntibody, ',');
+        getline(tokenStream, positiveTestsPeopleAntibody, ',');
+        getline(tokenStream, negativeTestsPeopleAntibody, ',');
+        getline(tokenStream, totalTestsPeopleAntigen, ',');
+        getline(tokenStream, positiveTestsPeopleAntigen, ',');
+        getline(tokenStream, totalTestsAntigen, ',');
+        getline(tokenStream, fips, ',');
+        getline(tokenStream, negativeIncrease, ',');
+        getline(tokenStream, total, ',');
+        getline(tokenStream, totalTestResultsIncrease, ',');
+        getline(tokenStream, posNeg, ',');
+        getline(tokenStream, deathIncrease, ',');
+        getline(tokenStream, hospitalizedIncrease, ',');
+        getline(tokenStream, hash, ',');
+        getline(tokenStream, commercialScore, ',');
+        getline(tokenStream, negativeRegularScore, ',');
+        getline(tokenStream, negativeScore, ',');
+        getline(tokenStream, positiveScore, ',');
+        getline(tokenStream, score, ',');
+        getline(tokenStream, grade, ',');        
+        nH.date = date;
+        nH.state = state;
+        nH.positive = positive;
+        nH.probableCases = probableCases;
+        nH.negative = negative;
+        nH.pending = pending;
+        nH.totalTestResultsSource = totalTestResultsSource;
+        nH.totalTestResults = totalTestResults;
+        nH.hospitalizedCurrently = hospitalizedCurrently;
+        nH.hospitalizedCumulative = hospitalizedCumulative;
+        nH.inIcuCurrently = inIcuCurrently;
+        nH.inIcuCumulative = inIcuCumulative;
+        nH.onVentilatorCurrently = onVentilatorCurrently;
+        nH.onVentilatorCumulative = onVentilatorCumulative;
+        nH.recovered = recovered;
+        nH.dataQualityGrade = dataQualityGrade;
+        nH.lastUpdateEt = lastUpdateEt;
+        nH.dateModified = dateModified;
+        nH.checkTimeEt = checkTimeEt;
+        nH.death = death;
+        nH.hospitalized = hospitalized;
+        nH.dateChecked = dateChecked;
+        nH.totalTestsViral = totalTestsViral;
+        nH.positiveTestsViral = positiveTestsViral;
+        nH.negativeTestsViral = negativeTestsViral;
+        nH.positiveCasesViral = positiveCasesViral;
+        nH.deathConfirmed = deathConfirmed;
+        nH.deathProbable = deathProbable;
+        nH.totalTestEncountersViral = totalTestEncountersViral;
+        nH.totalTestsPeopleViral = totalTestsPeopleViral;
+        nH.totalTestsAntibody = totalTestsAntibody;
+        nH.positiveTestsAntibody = positiveTestsAntibody;
+        nH.negativeTestsAntibody = negativeTestsAntibody;
+        nH.totalTestsPeopleAntibody = totalTestsPeopleAntibody;
+        nH.positiveTestsPeopleAntibody = positiveTestsPeopleAntibody;
+        nH.negativeTestsPeopleAntibody = negativeTestsPeopleAntibody;
+        nH.totalTestsPeopleAntigen = totalTestsPeopleAntigen;
+        nH.positiveTestsPeopleAntigen = positiveTestsPeopleAntigen;
+        nH.totalTestsAntigen = totalTestsAntigen;
+        nH.fips = fips;
+        nH.negativeIncrease = negativeIncrease;
+        nH.total = total;
+        nH.totalTestResultsIncrease = totalTestResultsIncrease;
+        nH.posNeg = posNeg;
+        nH.deathIncrease = deathIncrease;
+        nH.hospitalizedIncrease = hospitalizedIncrease;
+        nH.hash = hash;
+        nH.commercialScore = commercialScore;
+        nH.negativeRegularScore = negativeRegularScore;
+        nH.negativeScore = negativeScore;
+        nH.positiveScore = positiveScore;
+        nH.score = score;
+        nH.grade = grade;
+
+        // data -> emplace(state, nH);
     }
     f.close();
 }
