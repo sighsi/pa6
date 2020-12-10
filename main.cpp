@@ -35,6 +35,25 @@ std::string API_STATE_VALUES =      "/v1/states/daily.csv";           // state v
 std::string DATA_FILE_PATH =        "data/";
 std::string TODAYS_DATE;
 int NUMBTNS = 7;
+/**
+ * MEETING NOTES:
+ *  BTN0: SHOWS TODAYS DATA
+ *  BTN1: GET DATA FROM A DATE TEXTBOX
+ *  BTN2: SHOW WASHINGTON DATA
+ *  BTN3: GRAB STATE STRING FROM TEXTBOX AND DISPLAY STATE DATA
+*   BTN4: CHAT BOX
+ *  BTN5: COLORADO DATA
+ *  BTN6: HELP -> FEATURES/ OF THE PROGRAM AND ALSO SHOWS API STATUS
+ * 
+ * TODO:
+ *      silas:  1) create a state data structure
+ *          2)  
+ *  Connor
+ * 
+ *  Daniel:
+ * 
+ * 
+ */ 
 
 //*************************************************************************************\\
 //**************************** button class     *************************************\\
@@ -184,7 +203,7 @@ public:
         std::cout << "In text constructor";
         this->box_text.setString(to_write);
         this->box_text.setFont(font);
-        this->box_text.setPosition(sf::Vector2f(205.0f, 95.0f));
+        this->box_text.setPosition(sf::Vector2f(position));
         this->box_text.setFillColor(color);
         this->box_text.setCharacterSize(char_size);
     }
@@ -366,7 +385,7 @@ void apiCall(std::string apiExtension)
 
 //*************************************************************************************\\
 //*************************************************************************************\\
-//**************************** FUNCTIONS           *****************************`********\\
+//**************************** FUNCTIONS           ************************************\\
 //*************************************************************************************\\
 //*************************************************************************************\\
 //*************************************************************************************\\
@@ -451,6 +470,7 @@ void run_program(std::unordered_map<std::string, apiDataClass> *& data) {
     state_label.setPosition(sf::Vector2f(475.0f, 33.0f));
     state_label.setFillColor(sf::Color::Red);
     // Textbox(sf::Vector2f position, int char_size, std::string to_write, sf::Font &font, sf::Color)
+    //                            x  y
     Textbox help_str(sf::Vector2f(0, 0), 15, "help", ocra, sf::Color::White);
 
     //float ypos, sf::Vector2f size, sf::Color color, std::string label, sf::Font & font
@@ -630,7 +650,7 @@ void run_program(std::unordered_map<std::string, apiDataClass> *& data) {
                 cur_btn = -1;
                 break;
             case 5:
-                button5Function(data);
+
                 cur_btn = -1;
                 std::cout << "case 5";
                 break;
