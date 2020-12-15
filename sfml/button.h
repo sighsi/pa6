@@ -61,7 +61,7 @@ Button (float ypos, sf::Vector2f size, sf::Color color, std::string label, sf::F
     rect.setTexture(&rect_texture);
     rect.setFillColor(color);
     indicator.setPosition(sf::Vector2f(size.x * 3/4, ypos + size.y * .33)); //might need to fiddle with this connor. - connor 12/7
-    std::cout  << "yo";
+    //std::cout  << "yo";
     indicator.setRadius(15.0f);
     indicator.setTexture(&butt_texture);
     indicator.setFillColor(sf::Color::Red);

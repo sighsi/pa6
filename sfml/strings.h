@@ -2,8 +2,14 @@
 #define STRINGS_H
 #include <string> // maybe load csv into hash table - connor 
 
+
+
+std::string state_input_str= "Enter state";
+std::string date_input_str= "Enter date";
 std::string help = "Click the button enter the state yadda yadda.\nMoreAdvanced help soon.";
 std::string AL = "Alabama";
+
+
 
 /* Alabama	AL
 Alaska	AK

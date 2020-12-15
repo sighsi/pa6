@@ -15,8 +15,6 @@
 } */
 void narg();
 void nag();
-
-
 void reset_indicators (Button button_arr[], int cur_select)
 {
     for (int i = 0; i < 7; i++) //update this so it doesn't depend on magic num connor. -connor 12/8/20
@@ -31,9 +29,11 @@ void reset_indicators (Button button_arr[], int cur_select)
 
 
 }
+
+
 void run_program()
 {
-
+  
   sf::RenderWindow Window(sf::VideoMode(800, 600), "Covid-tracker");
   
   sf::Texture background;
@@ -48,10 +48,17 @@ void run_program()
 
   sf::RectangleShape back_g(sf::Vector2f(800.0f,600.0f));
   back_g.setTexture(&background);
+
+  /* std::vector<std::unique_ptr<Button> > button_vec;
+  for(int i = 0; i < 7; i++)
+  {
+    button_vec.push_back ( new Button(70.0*i, sf::Vector2f(150.0f,70.0f), sf::Color::Cyan) );
+  } */
+
+  //Button *btn;
    
   sf::Font ocra;
   ocra.loadFromFile("OCRAEXT.TTF");
-
   //(sf::Vector2f location, sf::Vector2f size, sf::Font &font)
   Textbox state_input(sf::Vector2f(550.0f, 30.0f), sf::Vector2f(200.0f,35.0f), ocra);
   //state_i
@@ -63,8 +70,23 @@ void run_program()
   state_label.setCharacterSize(20);
   state_label.setPosition(sf::Vector2f(475.0f,33.0f));
   state_label.setFillColor(sf::Color::Red);
+
+
+  Textbox date_input (sf::Vector2f(150.0f, 550.0f), sf::Vector2f(200.0f,35.0f), ocra);
+  date_input.set_box_color(sf::Color(170,170,170,220));
+
+  sf::Text date_label;
+  
+  date_label.setFont(ocra);
+  date_label.setString("Date:");
+  date_label.setCharacterSize(20);
+  date_label.setPosition(sf::Vector2f(75.0f,550.0f));
+  date_label.setFillColor(sf::Color::Red);
+
+
+
    // Textbox(sf::Vector2f position, int char_size, std::string to_write, sf::Font &font, sf::Color)
-  Textbox help_str(sf::Vector2f(0,0), 15, help, ocra, sf::Color::White);
+  Textbox help_str(sf::Vector2f(205.0f ,95.0f), 15, help, ocra, sf::Color::White);
 
   //float ypos, sf::Vector2f size, sf::Color color, std::string label, sf::Font & font
   Button btn0(70.0*0, sf::Vector2f(150.0f,70.0f), sf::Color::Cyan, "btn0", ocra);
@@ -83,47 +105,19 @@ void run_program()
   butt_arr[4] = btn4;
   butt_arr[5] = btn5;
   butt_arr[6] = btn6;
+  //Button btn1(70.0*7, sf::Vector2f(150.0f,70.0f), sf::Color::Cyan);
 
 
 
-  sf::Vector2u size(400,400);
-  std::string message = "Hi my name is connor.";
-  std::string display = "";
-  sf::RectangleShape square_0(sf::Vector2f(150.0f,70.0f));
-  sf::CircleShape circle_0;
-  circle_0.setRadius(20.0f);
-  sf::RectangleShape square_1(sf::Vector2f(150.0f,70.0f));
-  sf::RectangleShape square_2(sf::Vector2f(150.0f,70.0f));
-  sf::RectangleShape square_3(sf::Vector2f(150.0f,70.0f));
-  sf::RectangleShape square_4(sf::Vector2f(150.0f,70.0f));
-  sf::RectangleShape square_5(sf::Vector2f(150.0f,70.0f));
-  sf::RectangleShape text_sq(sf::Vector2f(550.0f, 470.0f));
+
+  sf::RectangleShape text_sq(sf::Vector2f(550.0f, 450.0f)); //changed to 450 12/10-connor
   text_sq.setFillColor(sf::Color(47,79,79,200));
   text_sq.setPosition(200,90);
   text_sq.setOutlineColor(sf::Color(35, 67,67,220));
   text_sq.setOutlineThickness(2.5f);
-  sf::CircleShape circle_1(20.0f);
-  sf::CircleShape circle_2(20.0f);
-  sf::CircleShape circle_3(20.0f);
-  sf::CircleShape circle_4(20.0f);
-  sf::CircleShape circle_5(20.0f);
+
 
   
-  square_1.setPosition(sf::Vector2f(0,70.0f));
-  square_1.setFillColor(sf::Color::Green);
-  square_1.setOutlineColor(sf::Color::Black);
- // square_1.setOutlineThickness(-2.0);
-  square_2.setPosition(0,140.0);
-  square_1.setTexture(&btn);
- // circle_0.setFillColor(sf::Color::Green);
-  circle_0.setTexture(&grn);
-  circle_0.setPosition(sf::Vector2f(125.0F,17.5f));
-  square_0.setFillColor(sf::Color::Cyan);
-  square_0.setTexture(&btn);
-  std::cout << size.x << " " << size.y << std::endl;
-    
-  square_2.setFillColor(sf::Color::Cyan);
-  square_2.setTexture(&btn);
   Window.setSize(sf::Vector2u(800,600)); 
 
   int index = 0;
@@ -140,7 +134,10 @@ void run_program()
     }
     state_input.draw_to_screen(Window);
     Window.draw(state_label);
+    date_input.draw_to_screen(Window);
+    Window.draw(date_label);
     Window.draw(text_sq);
+
     
       sf::Event Event;
       while(Window.pollEvent(Event))
@@ -171,12 +168,22 @@ void run_program()
 
                 //std::cout << "Mouse within bounds" << std::endl;
                 break;
-            case sf::Event::MouseLeft:
-                std::cout << "Mouse not within bounds" << std::endl;
-        }
-      
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        {
+            case sf::Event::TextEntered:
+            {
+              if(state_input.get_selected())
+              {
+              write_to_screen(Event,state_input, state_input_str );
+              }
+              else if (date_input.get_selected())
+              {
+                write_to_screen(Event, date_input, date_input_str);
+              }
+               
+              break;  
+              
+            }
+            case sf::Event::MouseButtonPressed:
+            {
 
           sf::Vector2i cur_pos= sf::Mouse::getPosition(Window);
           if(cur_pos.x < 150 && cur_pos.y <= 70)
@@ -221,8 +228,31 @@ void run_program()
             cur_btn = 6;
             reset_indicators(butt_arr, 6);
           }
-          
+          else if (cur_pos.x > 550.0f && cur_pos.x < 750.0f && cur_pos.y > 30.0f && cur_pos.y < 65.0f )
+          {
+            state_input.set_selected(true);
+            //tate_input.set_text("selected state");
+
+          }
+          else if (cur_pos.x > 150.0f && cur_pos.x < 350.0f && cur_pos.y > 550.0f && cur_pos.y < 585.0f)
+          {
+            date_input.set_selected(true);
+            state_input.set_selected(false);
+          }
+          else
+          {
+            state_input.set_selected(false);
+            date_input.set_selected(false);
+          }
+            }
+                
         }
+      
+        /* if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+
+           
+        } */
       }
     switch(cur_btn)
     {
@@ -239,7 +269,7 @@ void run_program()
         case 4:
         break;
         case 5:
-        std::cout << "case 5";
+      //  std::cout << "case 5";
         break;
         case 6:
         //std::cout << "case 6";
@@ -249,6 +279,36 @@ void run_program()
 
     }
 
+
+      
+      //square_0.getPosition///
+      /* for(auto it = rect_vec->begin(); it != rect_vec->end(); it++)
+      {
+        Window.draw(*it);
+      } */
+      
+    // for(auto it = button_vec->begin(); it != button_vec->end(); it++)
+
+
+
+
+
+     /* for(auto x : button_vec)
+     {
+       int i = 0;
+       //*it.draw_to_screen(Window);
+       x->draw_to_screen(Window);
+     } */
+
+
+    
+      /* Window.draw(back_g);
+      Window.draw(text_sq);
+      Window.draw(square_0);
+      Window.draw(circle_0);
+      Window.draw(square_1);
+      Window.draw(square_2); */
+      
       Window.display();
 
    
@@ -256,5 +316,32 @@ void run_program()
 
 
 
+
+}
+
+
+void write_to_screen(sf::Event &Event, Textbox &tbox, std::string &out)//doesn't actually write to screen, more updates what will be
+{
+  std::string input;
+  std::string str;
+    if(Event.text.unicode != 13 && Event.text.unicode != 8) //carriage return. and backspace respectively.
+    {
+      str += Event.text.unicode;
+      tbox.append(str);
+    }
+    else if( Event.text.unicode == 13)
+    {
+      input = tbox.get_string();
+      out = input;
+      std::cout << "entered: " << input ;
+    }
+    else
+    {
+      tbox.del_char();
+     // std::cout << "\nleft del char\n";
+      
+    }
+  input = tbox.get_string();
+      //return input;
 
 }
